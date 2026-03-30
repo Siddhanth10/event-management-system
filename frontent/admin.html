@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+  <h2>Admin Dashboard</h2>
+
+  <!-- Stats -->
+  <div class="row text-center mb-4">
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h4 id="usersCount">0</h4>
+        <p>Total Users</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h4 id="eventsCount">0</h4>
+        <p>Total Events</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Event -->
+  <div class="card p-3 mb-4">
+    <h4>Add Event</h4>
+    <input type="date" id="date" class="form-control mb-2">
+    <input type="time" id="time" class="form-control mb-2">
+    <input type="text" id="request" class="form-control mb-2" placeholder="Event Name">
+    <input type="number" id="venue_id" class="form-control mb-2" placeholder="Venue ID">
+    <button class="btn btn-primary" onclick="addEvent()">Add Event</button>
+  </div>
+
+  <!-- Users Table -->
+  <h4>Users</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable"></tbody>
+  </table>
+</div>
+
+<script>
+// Load users
+fetch("http://localhost:5000/users")
+.then(res => res.json())
+.then(data => {
+  document.getElementById("usersCount").innerText = data.length;
+
+  let output = "";
+  data.forEach(u => {
+    output += `<tr>
+      <td>${u.User_id}</td>
+      <td>${u.Name}</td>
+      <td>${u.Email}</td>
+    </tr>`;
+  });
+
+  document.getElementById("usersTable").innerHTML = output;
+});
+
+// Load events count
+fetch("http://localhost:5000/events")
+.then(res => res.json())
+.then(data => {
+  document.getElementById("eventsCount").innerText = data.length;
+});
+
+// Add event
+function addEvent(){
+  fetch("http://localhost:5000/add-event", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      date: date.value,
+      time: time.value,
+      request: request.value,
+      venue_id: venue_id.value
+    })
+  })
+  .then(res => res.text())
+  .then(data => {
+    alert("Event Added!");
+    location.reload();
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Payment</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1505236858219-8359eb29e329') center/cover no-repeat;
+      height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0,0,0,0.65);
+      z-index: -1;
+    }
+
+    .payment-box {
+      max-width: 500px;
+      margin: 80px auto;
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      color: white;
+    }
+
+    .form-control {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    }
+
+    /* 🔥 THIS IS THE FIX */
+    .form-control:focus {
+    background: rgba(255,255,255,0.15) !important; /* keep glass */
+    color: white !important;
+    border: 1px solid #28a745;
+    box-shadow: 0 0 10px rgba(40,167,69,0.5); /* glow */
+    outline: none;
+    transform: scale(1.02);
+    }
+
+    .method-btn {
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      color: white;
+    }
+
+    .active-method {
+      border: 2px solid #28a745;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .pay-btn {
+      border-radius: 30px;
+      font-weight: 600;
+    }
+
+    #amount {
+    color: #00ffcc;
+    text-shadow: 0 0 10px rgba(0,255,200,0.5);
+    }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div class="payment-box">
+
+  <h3 class="text-center mb-4">Complete Payment</h3>
+
+  <p class="text-center ">Amount</p>
+  <h2 class="text-center mb-4">₹ <span id="amount"></span></h2>
+
+  <div class="row g-2 mb-4">
+    <div class="col-4">
+      <div class="method-btn" onclick="selectMethod('card')" id="cardBtn">Card</div>
+    </div>
+    <div class="col-4">
+      <div class="method-btn" onclick="selectMethod('upi')" id="upiBtn">UPI</div>
+    </div>
+    <div class="col-4">
+      <div class="method-btn" onclick="selectMethod('cash')" id="cashBtn">Cash</div>
+    </div>
+  </div>
+
+  <div id="cardFields" style="display:none;">
+    <input type="text" class="form-control mb-2" placeholder="Card Number">
+    <input type="text" class="form-control mb-2" placeholder="Card Holder">
+  </div>
+
+  <div id="upiFields" style="display:none;">
+    <input type="text" class="form-control mb-2" placeholder="Enter UPI ID">
+  </div>
+
+  <div id="cashFields" style="display:none;">
+    <p class="text-center " style="color: aliceblue;">Pay at event location</p>
+  </div>
+
+<button class="btn btn-success w-100 mt-3 pay-btn" onclick="payNow()">Proceed</button>
+
+  <div class="spinner" id="spinner">
+    <div class="spinner-border text-light"></div>
+    <p class="mt-2">Processing Payment...</p>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const event = JSON.parse(localStorage.getItem("pendingEvent"));
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if(event){
+    document.getElementById("amount").innerText = 100000;
+  }
+
+  let selected = "";
+
+  window.selectMethod = function(method){
+
+    selected = method;
+
+    const cardFields = document.getElementById("cardFields");
+    const upiFields = document.getElementById("upiFields");
+    const cashFields = document.getElementById("cashFields");
+
+    const cardBtn = document.getElementById("cardBtn");
+    const upiBtn = document.getElementById("upiBtn");
+    const cashBtn = document.getElementById("cashBtn");
+
+    cardFields.style.display = "none";
+    upiFields.style.display = "none";
+    cashFields.style.display = "none";
+
+    cardBtn.classList.remove("active-method");
+    upiBtn.classList.remove("active-method");
+    cashBtn.classList.remove("active-method");
+
+    if(method === "card"){
+      cardFields.style.display = "block";
+      cardBtn.classList.add("active-method");
+    }
+
+    if(method === "upi"){
+      upiFields.style.display = "block";
+      upiBtn.classList.add("active-method");
+    }
+
+    if(method === "cash"){
+      cashFields.style.display = "block";
+      cashBtn.classList.add("active-method");
+    }
+  }
+
+  window.payNow = function(){
+
+    if(!selected){
+      alert("Select payment method");
+      return;
+    }
+
+    document.getElementById("spinner").style.display = "block";
+
+    setTimeout(() => {
+
+      fetch("http://127.0.0.1:5000/create-event", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          ...event,
+          user_id: user.User_id
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        localStorage.removeItem("pendingEvent");
+        window.location.href = "receipt.html";
+      });
+
+    }, 1500);
+  }
+
+});
+</script>
+
+</body>
+</html>
