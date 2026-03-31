@@ -256,7 +256,7 @@ document.getElementById("eventForm").addEventListener("submit", function(e){
 });
 
 // Fetch Events
-fetch(`http://127.0.0.1:5000/events/${user.User_id}`)
+fetch(`https://ingenious-gentleness-production-7add.up.railway.app/events/${user.User_id}`)
   .then(res => res.json())
   .then(data => {
 
@@ -294,7 +294,7 @@ fetch(`http://127.0.0.1:5000/events/${user.User_id}`)
 function deleteEvent(id){
   if(!confirm("Cancel this event?")) return;
 
-  fetch(`http://127.0.0.1:5000/delete-event/${id}`, {
+  fetch(`https://ingenious-gentleness-production-7add.up.railway.app/delete-event/${id}`, {
     method: "DELETE"
   })
   .then(res => res.json())
