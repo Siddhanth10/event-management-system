@@ -72,7 +72,7 @@ app.post("/signup", async (req, res) => {
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  const query = "SELECT * FROM Users WHERE Email = ?";
+  const query = "SELECT * FROM users WHERE Email = ?";
 
   db.query(query, [email], async (err, result) => {
     if (err) return res.json({ success: false });
@@ -120,7 +120,7 @@ app.post("/create-event", (req, res) => {
 
 // ================= USERS (ADMIN) =================
 app.get("/users", (req, res) => {
-  db.query("SELECT * FROM Users", (err, result) => {
+  db.query("SELECT * FROM users", (err, result) => {
     if (err) return res.json({ error: err });
     res.json(result);
   });
