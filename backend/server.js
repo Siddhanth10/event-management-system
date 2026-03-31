@@ -14,22 +14,7 @@ app.get("/", (req, res) => {
 });
 
 // ================= EVENTS =================
-app.get('/events/:id', (req, res) => {
-  const userId = req.params.id;
 
-  db.query(
-    "SELECT * FROM event WHERE User_id = ?",
-    [userId],
-    (err, result) => {
-      if (err) {
-        console.error("DB ERROR:", err);
-        return res.status(500).json({ error: err.message });
-      }
-
-      res.json(result);
-    }
-  );
-});
 
 // ================= REGISTER =================
 app.post("/register", (req, res) => {
