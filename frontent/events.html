@@ -224,12 +224,15 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 // Navbar
 document.getElementById("nav-auth").innerHTML = `
-  <a href="events.html" class="btn btn-outline-light btn-sm">Events</a>
-  <a href="bookings.html" class="btn btn-warning btn-sm">My Bookings</a>
 
   <span class="text-white fw-semibold">
      ${user.Name || user.name}
   </span>
+  
+  <a href="events.html" class="btn btn-outline-light btn-sm">Events</a>
+  <a href="bookings.html" class="btn btn-warning btn-sm">My Bookings</a>
+
+  
 
   <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
 `;
