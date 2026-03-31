@@ -75,7 +75,7 @@
 </div>
 
 <script>
-// 🔐 Protect
+// 🔐 Protect route
 if(!localStorage.getItem("user")){
   window.location.href = "login.html";
 }
@@ -94,25 +94,15 @@ function logout(){
   window.location.href = "login.html";
 }
 
-// 🔥 FETCH FROM DB
+// 🔥 FETCH BOOKINGS FROM DB
 fetch(`https://ingenious-gentleness-production-7add.up.railway.app/my-bookings/${user.User_id}`)
   .then(res => res.json())
   .then(data => {
 
-    let bookings = data || [];
+    console.log("Bookings:", data); // ✅ debug
 
-    // 🔥 ALSO ADD LAST EVENT (INSTANT SHOW)
-    const lastEvent = JSON.parse(localStorage.getItem("lastEvent"));
-    if(lastEvent){
-      bookings.unshift({
-        Event_name: lastEvent.name,
-        Event_date: lastEvent.date,
-        Event_time: lastEvent.time,
-        Request: lastEvent.request
-      });
-    }
-
-    if(!bookings.length){
+    // ✅ Ensure it's an array
+    if(!Array.isArray(data) || data.length === 0){
       document.getElementById("bookings").innerHTML =
         "<p class='empty'>No events booked yet</p>";
       return;
@@ -120,14 +110,14 @@ fetch(`https://ingenious-gentleness-production-7add.up.railway.app/my-bookings/$
 
     let output = "";
 
-    bookings.forEach(event => {
+    data.forEach(event => {
       output += `
         <div class="col-md-4">
           <div class="card-custom">
             <h5 class="event-title">${event.Event_name || "No Title"}</h5>
-            <p>${event.Request || ""}</p>
-            <p>📅 ${event.Event_date?.split("T")[0] || event.Event_date}</p>
-            <p>⏰ ${event.Event_time}</p>
+            <p>${event.Request || "No special request"}</p>
+            <p>📅 ${formatDate(event.Event_date)}</p>
+            <p>⏰ ${event.Event_time || "N/A"}</p>
           </div>
         </div>
       `;
@@ -136,10 +126,16 @@ fetch(`https://ingenious-gentleness-production-7add.up.railway.app/my-bookings/$
     document.getElementById("bookings").innerHTML = output;
   })
   .catch(err => {
-    console.log(err);
+    console.error("Fetch error:", err);
     document.getElementById("bookings").innerHTML =
-      "<p class='empty'>Error loading bookings</p>";
+      "<p class='empty'>⚠ Failed to load bookings</p>";
   });
+
+// 📅 Format date cleanly
+function formatDate(date){
+  if(!date) return "N/A";
+  return new Date(date).toLocaleDateString();
+}
 </script>
 
 </body>
