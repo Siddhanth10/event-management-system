@@ -7,8 +7,7 @@
   <!-- 🎉 Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    .body{
-        background-color: aqua;
+    body{
         background-image: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     }
 
@@ -43,17 +42,23 @@
 </div>
 
 <script>
-const data = JSON.parse(localStorage.getItem("receipt"));
+// ✅ Use sessionStorage (temporary)
+const data = JSON.parse(sessionStorage.getItem("receipt"));
 
-// Show details
-document.getElementById("details").innerHTML = `
-  <p><strong>Event:</strong> ${data.name}</p>
-  <p><strong>Date:</strong> ${data.date}</p>
-  <p><strong>Time:</strong> ${data.time}</p>
-  <p><strong>Amount:</strong>Undisclosed</p>
-  <p><strong>Method:</strong> ${data.method}</p>
-  <p><strong>Transaction ID:</strong> ${data.txn}</p>
-`;
+// ✅ Safety check
+if(!data){
+  document.getElementById("details").innerHTML =
+    "<p>No receipt data found</p>";
+} else {
+  document.getElementById("details").innerHTML = `
+    <p><strong>Event:</strong> ${data.name}</p>
+    <p><strong>Date:</strong> ${data.date}</p>
+    <p><strong>Time:</strong> ${data.time}</p>
+    <p><strong>Amount:</strong> Undisclosed</p>
+    <p><strong>Method:</strong> ${data.method}</p>
+    <p><strong>Transaction ID:</strong> ${data.txn}</p>
+  `;
+}
 
 // 🎉 CONFETTI FUNCTION
 function launchConfetti() {
@@ -81,8 +86,13 @@ function launchConfetti() {
   })();
 }
 
-// 🎉 Trigger on load
+// 🎉 Trigger
 launchConfetti();
+
+// 🔥 OPTIONAL: clear after showing
+setTimeout(() => {
+  sessionStorage.removeItem("receipt");
+}, 3000);
 
 // Redirect
 function goHome(){

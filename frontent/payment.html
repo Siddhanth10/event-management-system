@@ -204,11 +204,17 @@ document.addEventListener("DOMContentLoaded", function(){
       .then(res => res.json())
       .then(data => {
         if(data.success){
-          alert("🎉 Event Booked Successfully!");
+         // ✅ store ONLY temporary receipt data
+          sessionStorage.setItem("receipt", JSON.stringify({
+            ...eventData,
+            method: selected,
+            txn: "TXN" + Date.now()
+          }));
 
           localStorage.removeItem("pendingEvent");
 
-          window.location.href = "events.html";
+          // ❌ remove alert (receipt will show success)
+          window.location.href = "receipt.html";
         } else {
           alert("Event failed after payment");
         }
