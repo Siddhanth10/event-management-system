@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./db");
 const bcrypt = require("bcrypt");
-const PORT = 5000;
 
 console.log("🔥 SIGNUP FIX VERSION RUNNING 🔥");
 
@@ -192,7 +191,7 @@ app.get("/my-bookings/:user_id", (req, res) => {
 
 
 // ================= START =================
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
