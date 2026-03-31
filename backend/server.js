@@ -105,7 +105,7 @@ app.post("/create-event", (req, res) => {
   }
 
   const query = `
-    INSERT INTO Event (Event_name, Event_date, Event_time, Request, User_id)
+    INSERT INTO event (Event_name, Event_date, Event_time, Request, User_id)
     VALUES (?, ?, ?, ?, ?)`;
 
   db.query(query, [name, date, time, request, user_id], (err) => {
@@ -134,7 +134,7 @@ app.get("/test", (req, res) => {
 app.delete("/delete-event/:id", (req, res) => {
   const id = req.params.id;
 
-  db.query("DELETE FROM Event WHERE Event_id = ?", [id], (err) => {
+  db.query("DELETE FROM event WHERE Event_id = ?", [id], (err) => {
     if (err) {
       console.log(err);
       return res.json({ success: false });
@@ -151,7 +151,7 @@ app.get("/events/:user_id", (req, res) => {
   console.log("🔥 USER EVENTS HIT:", user_id);
 
   const query = `
-    SELECT * FROM Event 
+    SELECT * FROM event 
     WHERE User_id = ?
     ORDER BY Event_date`;
 
@@ -176,7 +176,7 @@ app.get("/my-bookings/:user_id", (req, res) => {
 
     SELECT e.*
     FROM Registration r
-    JOIN Event e ON r.Event_id = e.Event_id
+    JOIN event e ON r.Event_id = e.Event_id
     WHERE r.User_id = ?`;
 
   db.query(query, [user_id, user_id], (err, result) => {
