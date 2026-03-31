@@ -248,11 +248,33 @@ document.getElementById("eventForm").addEventListener("submit", function(e){
     date: document.getElementById("eventDate").value,
     time: document.getElementById("eventTime").value,
     request: document.getElementById("eventRequest").value,
-    amount: 500
+    user_id: user.User_id || user.user_id
   };
 
-  localStorage.setItem("pendingEvent", JSON.stringify(eventData));
-  window.location.href = "payment.html";
+  fetch("https://ingenious-gentleness-production-7add.up.railway.app/create-event", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(eventData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      alert("Event Created 🎉");
+
+      // OPTIONAL: then go to payment
+      localStorage.setItem("pendingEvent", JSON.stringify(eventData));
+      window.location.href = "payment.html";
+
+    } else {
+      alert("Failed to create event");
+    }
+  })
+  .catch(err => {
+    console.log(err);
+    alert("Server error");
+  });
 });
 
 // Fetch Events
