@@ -189,20 +189,30 @@ document.addEventListener("DOMContentLoaded", function(){
 
     setTimeout(() => {
 
+     const eventData = JSON.parse(localStorage.getItem("pendingEvent"));
+
       fetch("https://ingenious-gentleness-production-7add.up.railway.app/create-event", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-          ...event,
-          user_id: user.User_id
+          ...eventData,
+          user_id: JSON.parse(localStorage.getItem("user")).User_id
         })
       })
       .then(res => res.json())
       .then(data => {
-        localStorage.removeItem("pendingEvent");
-        window.location.href = "receipt.html";
-      });
+        if(data.success){
+          alert("🎉 Event Booked Successfully!");
 
+          localStorage.removeItem("pendingEvent");
+
+          window.location.href = "events.html";
+        } else {
+          alert("Event failed after payment");
+        }
+      });
     }, 1500);
   }
 
