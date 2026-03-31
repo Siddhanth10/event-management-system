@@ -10,7 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("🔥 WORKING NOW 🔥");
+  console.log("🔥 ROOT HIT");
+  res.send("Server is LIVE 🚀");
 });
 
 // ================= EVENTS =================
