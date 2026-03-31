@@ -146,7 +146,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
 
   msg.innerText = "⏳ Logging in...";
 
-  fetch("http://127.0.0.1:5000/login", {
+  fetch("https://ingenious-gentleness-production-7add.up.railway.app/login", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ email, password })
