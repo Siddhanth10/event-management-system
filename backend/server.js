@@ -14,16 +14,21 @@ app.get("/", (req, res) => {
 });
 
 // ================= EVENTS =================
-app.get("/events", (req, res) => {
-  console.log("EVENT HIT");
+app.get('/events/:id', (req, res) => {
+  const userId = req.params.id;
 
-  db.query("SELECT * FROM event", (err, result) => {
-    if (err) {
-      console.log("DB ERROR:", err);
-      return res.send("DB ERROR");
+  db.query(
+    "SELECT * FROM event WHERE User_id = ?",
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.error("DB ERROR:", err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.json(result);
     }
-    res.json(result);
-  });
+  );
 });
 
 // ================= REGISTER =================
