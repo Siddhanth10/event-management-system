@@ -166,20 +166,16 @@ app.get("/events/:user_id", (req, res) => {
 });
 
 // ================= USER BOOKINGS =================
-app.get("/my-bookings/:user_id", (req, res) => {
-  const user_id = req.params.user_id;
+app.get("/my-bookings/:userId", (req, res) => {
+  const userId = req.params.userId;
 
   const query = `
-    SELECT * FROM Event WHERE User_id = ?
+    SELECT * FROM event
+    WHERE User_id = ?
+    ORDER BY Event_date DESC
+  `;
 
-    UNION
-
-    SELECT e.*
-    FROM Registration r
-    JOIN event e ON r.Event_id = e.Event_id
-    WHERE r.User_id = ?`;
-
-  db.query(query, [user_id, user_id], (err, result) => {
+  db.query(query, [userId], (err, result) => {
     if (err) {
       console.log(err);
       return res.json([]);
